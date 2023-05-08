@@ -70,10 +70,10 @@ class LeNet:
         ax.plot([None] + hist.history['accuracy'], 'o-')
         ax.plot([None] + hist.history['val_accuracy'], 'x-')
 
-        ax.legend(['Train acc', 'Validation acc'], loc=0)
+        ax.legend(['Train accuracy', 'Validation accuracy'], loc=0)
         ax.set_title('Training/Validation acc per Epoch')
         ax.set_xlabel('Epoch')
-        ax.set_ylabel('acc')
+        ax.set_ylabel('Accuracy')
 
         plt.show()
 
