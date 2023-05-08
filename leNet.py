@@ -11,6 +11,10 @@ from tkinter import colorchooser, filedialog, messagebox
 from PIL import Image, ImageDraw
 import PIL.ImageGrab as ImageGrab
 
+global modelFilePath
+
+modelFilePath = './4p80Deep/Model/'
+
 class LeNet:
 
     def __init__(self, epoch):
@@ -47,7 +51,7 @@ class LeNet:
         testScore = model.evaluate(xTest,yTest)
 
         # Saves the Model for use
-        model.save('./4p80Deep/Model/')
+        model.save(modelFilePath)
 
         # Display the accuracy of the Model
         self.displayPlots(hist,testScore)
@@ -147,7 +151,7 @@ class Draw():
 
         print(img_array)
 
-        img_array = img_array.reshape(28, 28)
+        img_array = img_array.reshape(1, 28, 28, 1)
         print(img_array)
 
         img_array = img_array.astype('float32')
@@ -159,6 +163,17 @@ class Draw():
         img_array /= 255
         print(img_array)
         print(img_array.size)
+
+        # for i in range(len(img_array)):
+        #     # for j in range(len(img_array)):
+        #     print(img_array[i])
+
+        DLModel = keras.models.load_model(modelFilePath)
+
+        pred = DLModel.predict(img_array)
+
+        print(np.argmax(pred))
+
 
 def main():
     # leNet = LeNet(10)
