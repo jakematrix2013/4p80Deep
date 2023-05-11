@@ -2,11 +2,10 @@ import keras
 import numpy as np
 from tkinter import *
 from tkinter.ttk import Scale
-from tkinter import colorchooser, filedialog, messagebox
 from PIL import Image, ImageDraw
-import PIL.ImageGrab as ImageGrab
 
 class Draw:
+    
     def __init__(self, root, title, modelFilePath):
         self.modelFilePath = modelFilePath
         self.root = root
@@ -14,8 +13,9 @@ class Draw:
         self.root.geometry('300x330')
         self.root.configure(background='white')
         self.root.resizable(0, 0)
+        self.DLModel = keras.models.load_model(self.modelFilePath)
 
-        # variables for pointer and Eraser   
+        # Variables for pointer and Eraser   
         self.pointer = "black"
         self.erase = "white"
 
@@ -44,11 +44,11 @@ class Draw:
         self.background = Canvas(self.root, bg='white', bd=5, relief=GROOVE, height=280, width=280)
         self.background.place(x=10, y=0)
 
-        # Image for number drawn
+        # Image for number drawn, this will be able to actually read the pixel data
         self.image = Image.new('L', (280, 280), 'white')
         self.draw = ImageDraw.Draw(self.image)
 
-        #Bind the background Canvas with mouse click
+        # Bind the background Canvas with mouse click
         self.background.bind("<B1-Motion>", self.paint)
 
     # Paint Function for Drawing on the Canvas
@@ -74,32 +74,25 @@ class Draw:
         self.draw.rectangle((0, 0, 280, 280), 'white')
 
     def save_Number(self):
+        # Retrives the pixel data on the Image part of the Canvas
         resizedNumber = self.image.resize((28, 28))
 
-        print(resizedNumber)
         img_array = np.array(resizedNumber)
 
-        print(img_array)
-
+        # Reshapes to Numpy Array for processing
         img_array = img_array.reshape(1, 28, 28, 1)
-        print(img_array)
 
         img_array = img_array.astype('float32')
-        print(img_array)
 
+        # Measures the pixel "Brightness" 0 being black 255 being white
         img_array = 255 - img_array
-        print(img_array)
 
+        # Converts to formt (between 0 - 1) for input into the NN
         img_array /= 255
-        print(img_array)
-        print(img_array.size)
 
-        # for i in range(len(img_array)):
-        #     # for j in range(len(img_array)):
-        #     print(img_array[i])
+        # DLModel = keras.models.load_model(self.modelFilePath)
 
-        DLModel = keras.models.load_model(self.modelFilePath)
+        pred = self.DLModel.predict(img_array)
 
-        pred = DLModel.predict(img_array)
-
+        # Print the number most likely by the model
         print(np.argmax(pred))

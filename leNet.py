@@ -45,8 +45,8 @@ class LeNet:
         self.displayPlots(hist,testScore)
     
     def inputNormalizer(self,input):
-        input = input.astype('float32') #convert numeric type to float32
-        input /= 255 #normalize to [0,1]
+        input = input.astype('float32') # convert numeric type to float32
+        input /= 255 # normalize to [0,1]
         
         return input
 
